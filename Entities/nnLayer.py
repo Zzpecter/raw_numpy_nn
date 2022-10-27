@@ -9,13 +9,12 @@ class NN_Layer:
 
         self.size = weights.shape
 
-    def forward(self, input):
-        # Propagate inputs through the network,
-        # first multiply input by weights
-        dot_prod = np.dot(input, self.weights)
-        # add biases
-        dot_prod += self.biases
-        # pass the result to the activation function
+    def propagate_forward(self, data):
+        # Multiply the weights
+        layer_data = np.dot(data, self.weights)
+        # Add a bias
+        layer_data += self.biases
+        # Activate
         assert callable(self.activation_func), "Error, activation function is not callable!"
 
-        return self.activation_func(dot_prod)
+        return self.activation_func(layer_data)

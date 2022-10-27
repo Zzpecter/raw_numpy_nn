@@ -1,31 +1,24 @@
 import numpy as np
 
 
-class NeuralNetwork(object):
-    def __init__(self, layers, cost_func, activation_func):
-        self.inputLayerSize = 784
-        self.outputLayerSize = 10
+class MultilayerPerceptron(object):
+    def __init__(self, cost_func, activation_func):
+        self.input_layer_size = 784
+        self.output_layer_size = 10
 
-        self.hiddenLayers = layers
         self.cost_func = cost_func
         self.activation_func = activation_func
+        self.layers = None
 
+    def propagate_forward(self, data):
+        assert len(data) == 784, "Data is not of the needed dimension [784]"
 
+        nn_data = data
 
-    def GetParams(self):
-        # Get all weights unrolled into vector:
-        params = np.concatenate([w.weights.ravel() for w in self.hiddenLayers])
-        return params
+        # Propagate the input data through each of the layers
+        for idx, layer in enumerate(self.layers):
+            print(f"Forward pass - Layer {idx + 1}.\ndata shape: {nn_data.shape} weight shape: {layer.size}")
+            nn_data = layer.propagate_forward(nn_data)
+            print(f"Forward pass - Layer {idx + 1}.\noutput: {nn_data}")
 
-    def SetParams(self, params):
-        # Set W1 and W2 using single paramater vector.
-        # TODOOO
-        W1_start = 0
-        W1_end = self.hiddenLayerSize * self.inputLayerSize
-        self.W1 = np.reshape(params[W1_start:W1_end], (self.inputLayerSize, self.hiddenLayerSize))
-        W2_end = W1_end + self.hiddenLayerSize * self.outputLayerSize
-        self.W2 = np.reshape(params[W1_end:W2_end], (self.hiddenLayerSize, self.outputLayerSize))
-
-    def ComputeGradients(self, X, y):
-        dJdW1, dJdW2 = self.CostFunctionPrime(X, y)
-        return np.concatenate((dJdW1.ravel(), dJdW2.ravel()))
+        print(f"result: {nn_data}")
