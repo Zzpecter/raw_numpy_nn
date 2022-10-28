@@ -11,7 +11,8 @@ class MultilayerPerceptron(object):
         self.layers = None
 
     def propagate_forward(self, data):
-        assert len(data) == 784, "Data is not of the needed dimension [784]"
+        print(data.shape)
+        assert data.shape == (1, 784), "Data is not of the needed dimension [1, 784]"
 
         nn_data = data
 

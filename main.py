@@ -10,7 +10,7 @@ import numpy as np
 if __name__ == "__main__":
     # First load data
     data, labels = DataLoader.load_data()
-
+    print(data.shape)
     # Construct the NN
     neural_network = mlp(CostFunctions.mean_squared_error, ActivationFunctions.sigmoid)
 
@@ -29,3 +29,5 @@ if __name__ == "__main__":
     layers = [first_layer, second_layer, third_layer]
 
     neural_network.layers = layers
+
+    neural_network.propagate_forward(data[0].reshape(1, 784))
