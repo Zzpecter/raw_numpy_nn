@@ -3,6 +3,7 @@ from Entities.nnLayer import NN_Layer
 from Entities.multilayerPerceptron import MultilayerPerceptron as mlp
 from Entities.activationFunctions import ActivationFunctions
 from Entities.costFunctions import CostFunctions
+from trainer import Trainer
 
 import numpy as np
 
@@ -11,6 +12,7 @@ if __name__ == "__main__":
     # First load data
     data, labels = DataLoader.load_data()
     print(data.shape)
+
     # Construct the NN
     neural_network = mlp(CostFunctions.mean_squared_error, ActivationFunctions.sigmoid)
 
@@ -30,4 +32,6 @@ if __name__ == "__main__":
 
     neural_network.layers = layers
 
-    neural_network.propagate_forward(data[0].reshape(1, 784))
+    # Declare the trainer
+    trainer = Trainer(neural_network)
+    trainer.train(data, labels)

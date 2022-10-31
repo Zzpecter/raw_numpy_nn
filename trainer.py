@@ -2,34 +2,34 @@ from scipy import optimize
 
 
 class Trainer(object):
-    def __init__(self, N):
+    def __init__(self, mlp):
         # Make reference to network:
-        self.N = N
+        self.mlp = mlp
 
-    def CallbackF(self, params):
-        self.N.SetParams(params)
-        self.J.append(self.N.CostFunction(self.X, self.y))
+    def callback_function(self, params):
+        self.mlp.set_params(params)
+        self.costs.append(self.mlp.cost_func(self.data, self.labels))
 
-    def CostFunctionWrapper(self, params, X, y):
-        self.N.SetParams(params)
-        cost = self.N.CostFunction(X, y)
-        grad = self.N.ComputeGradients(X, y)
+    def cost_function_wrapper(self, params, data, y):
+        self.mlp.set_params(params)
+        cost = self.mlp.mean_squared_error(data, y)
+        grad = self.mlp.compute_gradients(data, y)
 
         return cost, grad
 
-    def Train(self, X, y):
+    def train(self, data, labels):
         # Make an internal variable for the callback function:
-        self.X = X
-        self.y = y
+        self.data = data
+        self.labels = labels
 
         # Make empty list to store costs:
-        self.J = []
-
-        params0 = self.N.GetParams()
+        self.costs = []
+        params0 = self.mlp.get_params()
+        self.mlp.set_params(params0)
 
         # optimize.minimize calls a BFGS minimization algorithm to calculate the descent
         options = {'maxiter': 200, 'disp': True}
-        _res = optimize.minimize(self.CostFunctionWrapper, params0, jac=True, method='BFGS', args=(X, y),
-                                 options=options, callback=self.CallbackF)
-        self.N.SetParams(_res.x)
-        self.optimizationResults = _res
+        _res = optimize.minimize(self.cost_function_wrapper, params0, jac=True, method='BFGS', args=(data, labels),
+                                 options=options, callback=self.callback_function)
+        self.mlp.set_params(_res.x)
+        self.optimization_results = _res
